@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{# meus_eventos.html — Lista de eventos criados pelo usuário #}
+
+{% block title %}Meus Eventos — EventoIFS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold mb-0">
+        <i class="bi bi-person-lines-fill me-2 text-ifs"></i>Meus Eventos
+    </h1>
+    <a href="{% url 'criar_evento' %}" class="btn btn-ifs">
+        <i class="bi bi-plus-lg me-1"></i> Criar novo
+    </a>
+</div>
+
+{% if eventos %}
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Título</th>
+                <th>Tipo</th>
+                <th>Status</th>
+                <th>Data de início</th>
+                <th>Vagas</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evento in eventos %}
+            <tr>
+                <td class="fw-semibold">
+                    <a href="{% url 'detalhe_evento' evento.pk %}" class="link-ifs">
+                        {{ evento.titulo }}
+                    </a>
+                </td>
+                <td>{{ evento.get_tipo_display }}</td>
+                <td>
+                    <span class="badge
+                        {% if evento.status == 'ABERTO' %}bg-success
+                        {% elif evento.status == 'ENCERRADO' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ evento.get_status_display }}
+                    </span>
+                </td>
+                <td>{{ evento.data_inicio|date:"d/m/Y H:i" }}</td>
+                <td>{{ evento.vagas_disponiveis }}/{{ evento.vagas }}</td>
+                <td class="text-center">
+                    <a href="{% url 'editar_evento' evento.pk %}" class="btn btn-outline-primary btn-sm me-1" title="Editar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="{% url 'excluir_evento' evento.pk %}" class="btn btn-outline-danger btn-sm" title="Excluir">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<div class="text-center text-muted py-5">
+    <i class="bi bi-calendar-plus fs-1 mb-3 d-block"></i>
+    <h2 class="h5">Você ainda não criou nenhum evento.</h2>
+    <a href="{% url 'criar_evento' %}" class="btn btn-ifs mt-2">
+        <i class="bi bi-plus-lg me-1"></i> Criar meu primeiro evento
+    </a>
+</div>
+{% endif %}
+{% endblock %}

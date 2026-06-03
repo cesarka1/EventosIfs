@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{# lista.html — Listagem de eventos com busca/filtro (SPEC seção 8.5 / RF07) #}
+
+{% block title %}Eventos — EventoIFS{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     Cabeçalho da página
+============================================================ -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 fw-bold mb-1">
+            <i class="bi bi-calendar-event me-2 text-ifs"></i>Eventos Acadêmicos
+        </h1>
+        <p class="text-muted mb-0">Instituto Federal de Sergipe — Campus Lagarto</p>
+    </div>
+    {% if user.is_authenticated %}
+    <a href="{% url 'criar_evento' %}" class="btn btn-ifs">
+        <i class="bi bi-plus-lg me-1"></i> Criar Evento
+    </a>
+    {% endif %}
+</div>
+
+<!-- ============================================================
+     Formulário de busca/filtro via GET (SPEC seção 8.5 / RF07)
+============================================================ -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+        <form method="get" action="{% url 'lista_eventos' %}" id="form-busca">
+            <div class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label for="{{ form_busca.q.id_for_label }}" class="form-label fw-semibold">
+                        <i class="bi bi-search me-1"></i> Buscar
+                    </label>
+                    {{ form_busca.q }}
+                </div>
+                <div class="col-md-3">
+                    <label for="{{ form_busca.categoria.id_for_label }}" class="form-label fw-semibold">
+                        Categoria
+                    </label>
+                    {{ form_busca.categoria }}
+                </div>
+                <div class="col-md-2">
+                    <label for="{{ form_busca.status.id_for_label }}" class="form-label fw-semibold">
+                        Status
+                    </label>
+                    {{ form_busca.status }}
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-ifs flex-grow-1">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                    <a href="{% url 'lista_eventos' %}" class="btn btn-outline-secondary" title="Limpar filtros">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ============================================================
+     Grid de cards de eventos (SPEC seção 8.5)
+============================================================ -->
+{% if eventos %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    {% for evento in eventos %}
+    <div class="col">
+        <div class="card h-100 shadow-sm border-0 card-evento">
+            <div class="card-body d-flex flex-column">
+
+                <!-- Badge de status (SPEC seção 8.5) -->
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge rounded-pill
+                        {% if evento.status == 'ABERTO' %}bg-success
+                        {% elif evento.status == 'ENCERRADO' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ evento.get_status_display }}
+                    </span>
+                    <span class="badge bg-light text-dark border">
+                        {{ evento.get_tipo_display }}
+                    </span>
+                </div>
+
+                <!-- Título -->
+                <h2 class="h6 fw-bold card-title mb-2">{{ evento.titulo }}</h2>
+
+                <!-- Metadados -->
+                <ul class="list-unstyled text-muted small mb-3">
+                    <li class="mb-1">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        {{ evento.data_inicio|date:"d/m/Y H:i" }}
+                    </li>
+                    <li class="mb-1">
+                        <i class="bi bi-geo-alt me-1"></i>
+                        {{ evento.local }}
+                    </li>
+                    <li>
+                        <i class="bi bi-people me-1"></i>
+                        {% with disponiveis=evento.vagas_disponiveis %}
+                            {% if disponiveis > 0 %}
+                                <span class="text-success fw-semibold">{{ disponiveis }} vaga{{ disponiveis|pluralize }} disponível</span>
+                            {% else %}
+                                <span class="text-danger fw-semibold">Lotado</span>
+                            {% endif %}
+                        {% endwith %}
+                    </li>
+                </ul>
+
+                <!-- Categorias -->
+                {% if evento.categorias.exists %}
+                <div class="mb-3">
+                    {% for cat in evento.categorias.all %}
+                    <span class="badge bg-ifs-light text-ifs me-1">{{ cat.nome }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <a href="{% url 'detalhe_evento' evento.pk %}"
+                   class="btn btn-outline-ifs btn-sm mt-auto">
+                    <i class="bi bi-arrow-right-circle me-1"></i> Ver detalhes
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<!-- Nenhum evento encontrado (SPEC seção 8.5) -->
+<div class="text-center text-muted py-5">
+    <i class="bi bi-calendar-x fs-1 mb-3 d-block"></i>
+    <h2 class="h5">Nenhum evento encontrado</h2>
+    <p>Tente alterar os filtros de busca ou <a href="{% url 'lista_eventos' %}" class="link-ifs">limpe os filtros</a>.</p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'criar_evento' %}" class="btn btn-ifs mt-2">
+        <i class="bi bi-plus-lg me-1"></i> Criar o primeiro evento
+    </a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{# login.html — Formulário de login (SPEC seção 8.2) #}
+
+{% block title %}Entrar — EventoIFS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body p-4">
+
+                <!-- Cabeçalho -->
+                <div class="text-center mb-4">
+                    <i class="bi bi-calendar-event-fill text-ifs fs-1"></i>
+                    <h1 class="h4 fw-bold mt-2">Acesse sua conta</h1>
+                    <p class="text-muted small">EventoIFS — IFS Campus Lagarto</p>
+                </div>
+
+                <!-- Formulário -->
+                <form method="post" action="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" id="form-login" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label fw-semibold">
+                            <i class="bi bi-person me-1"></i> Usuário
+                        </label>
+                        <input type="text"
+                               id="id_username"
+                               name="username"
+                               class="form-control"
+                               placeholder="Seu nome de usuário"
+                               autocomplete="username"
+                               required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label fw-semibold">
+                            <i class="bi bi-lock me-1"></i> Senha
+                        </label>
+                        <input type="password"
+                               id="id_password"
+                               name="password"
+                               class="form-control"
+                               placeholder="Sua senha"
+                               autocomplete="current-password"
+                               required>
+                    </div>
+
+                    <button type="submit" class="btn btn-ifs w-100 py-2">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+                    </button>
+                </form>
+
+                <hr class="my-3">
+
+                <p class="text-center text-muted small mb-0">
+                    Ainda não tem conta?
+                    <a href="{% url 'cadastro' %}" class="link-ifs fw-semibold">Cadastre-se</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

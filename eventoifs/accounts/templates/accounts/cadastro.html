@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{# cadastro.html — Formulário de cadastro (SPEC seção 8.3) #}
+
+{% block title %}Cadastro — EventoIFS{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body p-4">
+
+                <!-- Cabeçalho -->
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-plus-fill text-ifs fs-1"></i>
+                    <h1 class="h4 fw-bold mt-2">Criar nova conta</h1>
+                    <p class="text-muted small">EventoIFS — IFS Campus Lagarto</p>
+                </div>
+
+                <!-- Formulário -->
+                <form method="post" action="{% url 'cadastro' %}" id="form-cadastro" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <!-- Primeiro nome -->
+                        <div class="col-sm-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">
+                                Nome
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Sobrenome -->
+                        <div class="col-sm-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">
+                                Sobrenome
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Username -->
+                        <div class="col-12">
+                            <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i> Nome de usuário
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- E-mail -->
+                        <div class="col-12">
+                            <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-envelope me-1"></i> E-mail
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Senha -->
+                        <div class="col-sm-6">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-lock me-1"></i> Senha
+                            </label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Confirmar senha -->
+                        <div class="col-sm-6">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-lock-fill me-1"></i> Confirmar senha
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Erros globais do form -->
+                        {% if form.non_field_errors %}
+                        <div class="col-12">
+                            <div class="alert alert-danger py-2">
+                                {% for error in form.non_field_errors %}
+                                    <div>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-ifs w-100 py-2">
+                                <i class="bi bi-person-check me-1"></i> Criar conta
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <hr class="my-3">
+                <p class="text-center text-muted small mb-0">
+                    Já tem conta?
+                    <a href="{% url 'login' %}" class="link-ifs fw-semibold">Entrar</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

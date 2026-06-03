@@ -1,0 +1,172 @@
+/*
+ * style.css — Estilos customizados do EventoIFS
+ * Complementa Bootstrap 5 com a identidade visual do IFS (verde).
+ * SPEC seção 2 / arquivo: static/css/style.css
+ */
+
+/* ============================================================
+   Variáveis de tema — IFS Verde
+============================================================ */
+:root {
+    --ifs-green:       #1a7a3c;
+    --ifs-green-dark:  #155f2f;
+    --ifs-green-light: #d4edda;
+    --ifs-green-muted: #e8f5ec;
+    --bs-body-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================================
+   Layout geral
+============================================================ */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+main {
+    flex: 1;
+}
+
+/* ============================================================
+   Navbar — cor IFS
+============================================================ */
+.bg-ifs {
+    background-color: var(--ifs-green) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.2s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #ffffff;
+}
+
+/* ============================================================
+   Botões — variante IFS
+============================================================ */
+.btn-ifs {
+    background-color: var(--ifs-green);
+    border-color: var(--ifs-green);
+    color: #ffffff;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-ifs:hover,
+.btn-ifs:focus {
+    background-color: var(--ifs-green-dark);
+    border-color: var(--ifs-green-dark);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-outline-ifs {
+    border-color: var(--ifs-green);
+    color: var(--ifs-green);
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.btn-outline-ifs:hover,
+.btn-outline-ifs:focus {
+    background-color: var(--ifs-green);
+    border-color: var(--ifs-green);
+    color: #ffffff;
+}
+
+/* ============================================================
+   Links
+============================================================ */
+.link-ifs {
+    color: var(--ifs-green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link-ifs:hover {
+    color: var(--ifs-green-dark);
+    text-decoration: underline;
+}
+
+/* ============================================================
+   Badges e cores de categoria
+============================================================ */
+.bg-ifs {
+    background-color: var(--ifs-green) !important;
+}
+
+.bg-ifs-light {
+    background-color: var(--ifs-green-light) !important;
+}
+
+.text-ifs {
+    color: var(--ifs-green) !important;
+}
+
+/* ============================================================
+   Cards de evento
+============================================================ */
+.card-evento {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 0.75rem;
+}
+
+.card-evento:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ============================================================
+   Barra de progresso de vagas
+============================================================ */
+.progress-bar.bg-ifs {
+    background-color: var(--ifs-green) !important;
+}
+
+/* ============================================================
+   Avatar do perfil
+============================================================ */
+.avatar-circle {
+    width: 80px;
+    height: 80px;
+    background-color: var(--ifs-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================================
+   Footer
+============================================================ */
+.footer-ifs {
+    background-color: #e9ecef;
+    border-top: 1px solid #dee2e6;
+    margin-top: 2rem;
+}
+
+/* ============================================================
+   Ajustes de formulário
+============================================================ */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--ifs-green);
+    box-shadow: 0 0 0 0.2rem rgba(26, 122, 60, 0.25);
+}
+
+/* ============================================================
+   Alertas — mapeamento de tags Django Messages
+============================================================ */
+.alert-error {
+    /* Django usa 'error', Bootstrap usa 'danger' */
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+    color: #842029;
+}

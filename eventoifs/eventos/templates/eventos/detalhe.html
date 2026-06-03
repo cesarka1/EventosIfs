@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{# detalhe.html — Detalhe de um evento (SPEC seção 8.6) #}
+
+{% block title %}{{ evento.titulo }} — EventoIFS{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+
+    <!-- ============================================================
+         Coluna principal: informações do evento
+    ============================================================ -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+
+                <!-- Status + Tipo no topo -->
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge rounded-pill fs-6
+                        {% if evento.status == 'ABERTO' %}bg-success
+                        {% elif evento.status == 'ENCERRADO' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ evento.get_status_display }}
+                    </span>
+                    <span class="badge bg-light text-dark border fs-6">
+                        {{ evento.get_tipo_display }}
+                    </span>
+                    <!-- Categorias como badges (SPEC seção 8.6) -->
+                    {% for cat in evento.categorias.all %}
+                    <span class="badge bg-ifs-light text-ifs border fs-6">{{ cat.nome }}</span>
+                    {% endfor %}
+                </div>
+
+                <h1 class="h3 fw-bold mb-4">{{ evento.titulo }}</h1>
+
+                <!-- Metadados -->
+                <dl class="row text-muted small mb-4">
+                    <dt class="col-sm-3"><i class="bi bi-calendar3 me-1"></i> Início</dt>
+                    <dd class="col-sm-9">{{ evento.data_inicio|date:"d/m/Y \à\s H:i" }}</dd>
+
+                    <dt class="col-sm-3"><i class="bi bi-calendar-check me-1"></i> Fim</dt>
+                    <dd class="col-sm-9">{{ evento.data_fim|date:"d/m/Y \à\s H:i" }}</dd>
+
+                    <dt class="col-sm-3"><i class="bi bi-geo-alt me-1"></i> Local</dt>
+                    <dd class="col-sm-9">{{ evento.local }}</dd>
+
+                    <dt class="col-sm-3"><i class="bi bi-person me-1"></i> Organizador</dt>
+                    <dd class="col-sm-9">{{ evento.organizador.get_full_name|default:evento.organizador.username }}</dd>
+                </dl>
+
+                <!-- Descrição -->
+                <h2 class="h6 fw-bold text-uppercase text-muted mb-2">Descrição</h2>
+                <div class="mb-4" id="descricao-evento">
+                    {{ evento.descricao|linebreaks }}
+                </div>
+
+                <!-- Botões de ação do organizador (SPEC seção 8.6) -->
+                {% if user.is_authenticated and user == evento.organizador %}
+                <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <a href="{% url 'editar_evento' evento.pk %}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-pencil me-1"></i> Editar
+                    </a>
+                    <a href="{% url 'excluir_evento' evento.pk %}" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-trash me-1"></i> Excluir
+                    </a>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         Coluna lateral: vagas + inscrição + participantes
+    ============================================================ -->
+    <div class="col-lg-4">
+
+        <!-- Card de vagas -->
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-body text-center p-4">
+                <h2 class="h6 fw-bold text-uppercase text-muted mb-3">
+                    <i class="bi bi-people me-1"></i> Vagas
+                </h2>
+                {% with disponiveis=evento.vagas_disponiveis %}
+                <div class="display-5 fw-bold
+                    {% if disponiveis > 0 %}text-success{% else %}text-danger{% endif %} mb-1">
+                    {{ disponiveis }}
+                </div>
+                <p class="text-muted small mb-3">
+                    disponíve{{ disponiveis|pluralize:"l,is" }} de {{ evento.vagas }}
+                </p>
+
+                <!-- Barra de progresso -->
+                {% with pct=evento.inscricoes.count|floatformat:0 %}
+                <div class="progress mb-3" style="height: 8px;" title="{{ evento.inscricoes.count }} inscritos">
+                    <div class="progress-bar bg-ifs"
+                         role="progressbar"
+                         style="width: {% widthratio evento.inscricoes.count evento.vagas 100 %}%">
+                    </div>
+                </div>
+                {% endwith %}
+
+                <!-- Botão de inscrição / cancelamento (SPEC seção 8.6) -->
+                {% if user.is_authenticated %}
+                    {% if ja_inscrito %}
+                    <form method="post" action="{% url 'cancelar_inscricao' evento.pk %}" id="form-cancelar">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="bi bi-x-circle me-1"></i> Cancelar inscrição
+                        </button>
+                    </form>
+                    {% elif evento.status == 'ABERTO' and not evento.esta_lotado %}
+                    <form method="post" action="{% url 'inscrever' evento.pk %}" id="form-inscrever">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ifs w-100">
+                            <i class="bi bi-check-circle me-1"></i> Inscrever-se
+                        </button>
+                    </form>
+                    {% elif evento.esta_lotado %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        <i class="bi bi-person-x me-1"></i> Evento lotado
+                    </button>
+                    {% else %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        <i class="bi bi-lock me-1"></i> Inscrições encerradas
+                    </button>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-ifs w-100">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Entrar para se inscrever
+                </a>
+                {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+
+        <!-- Lista de participantes — visível só para o organizador (SPEC seção 8.6) -->
+        {% if participantes %}
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h2 class="h6 fw-bold mb-3">
+                    <i class="bi bi-list-check me-1"></i> Participantes inscritos
+                    <span class="badge bg-secondary ms-1">{{ participantes.count }}</span>
+                </h2>
+                <ul class="list-group list-group-flush">
+                    {% for inscricao in participantes %}
+                    <li class="list-group-item px-0">
+                        <i class="bi bi-person-check me-2 text-success"></i>
+                        {{ inscricao.participante.get_full_name|default:inscricao.participante.username }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- Botão voltar -->
+<div class="mt-3">
+    <a href="{% url 'lista_eventos' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Voltar para lista
+    </a>
+</div>
+
+{% endblock %}

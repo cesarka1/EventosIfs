@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<!--
+    base.html — Template base global do EventoIFS (SPEC secao 8.1).
+    Todos os outros templates estendem este arquivo.
+    Inclui Bootstrap 5 via CDN, navbar responsiva, messages e footer.
+-->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EventoIFS — Plataforma de eventos acadêmicos do Instituto Federal de Sergipe">
+    <title>{% block title %}EventoIFS{% endblock %}</title>
+
+    <!-- Bootstrap 5 via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+    <!-- CSS próprio -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- ================================================================
+         NAVBAR (SPEC seção 8.1)
+    ================================================================ -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-ifs shadow-sm">
+        <div class="container">
+            <!-- Logo / Nome -->
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'lista_eventos' %}">
+                <i class="bi bi-calendar-event-fill fs-4"></i>
+                EventoIFS
+            </a>
+
+            <!-- Botão hambúrguer (mobile) -->
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                    aria-controls="navbarMain" aria-expanded="false"
+                    aria-label="Abrir menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Links -->
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <!-- Links à esquerda -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_eventos' %}">
+                            <i class="bi bi-list-ul"></i> Eventos
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'criar_evento' %}">
+                            <i class="bi bi-plus-circle"></i> Criar Evento
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'meus_eventos' %}">
+                            <i class="bi bi-person-lines-fill"></i> Meus Eventos
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <!-- Links à direita -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'perfil' %}">
+                            <i class="bi bi-person-circle"></i> {{ user.get_short_name|default:user.username }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'logout' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link text-white">
+                                <i class="bi bi-box-arrow-right"></i> Sair
+                            </button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right"></i> Entrar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light btn-sm px-3 ms-2" href="{% url 'cadastro' %}">
+                            <i class="bi bi-person-plus"></i> Cadastrar
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================================================================
+         MENSAGENS Django (SPEC seção 8.1)
+    ================================================================ -->
+    {% block messages %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endblock %}
+
+    <!-- ================================================================
+         CONTEÚDO DA PÁGINA
+    ================================================================ -->
+    <main class="container my-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ================================================================
+         FOOTER (SPEC seção 8.1)
+    ================================================================ -->
+    <footer class="footer-ifs text-center py-3 mt-auto">
+        <div class="container">
+            <span class="text-muted small">
+                <i class="bi bi-mortarboard-fill me-1"></i>
+                <strong>EventoIFS</strong> &mdash; Instituto Federal de Sergipe &bull; Campus Lagarto &bull; Programação Web I
+            </span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc4s9bIOgUxi8T/jzmfqXQFbCZ/7DvbM1ib2oOUVh/a+"
+            crossorigin="anonymous"></script>
+</body>
+</html>
