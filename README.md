@@ -1,16 +1,15 @@
-# EventoIFS
 
 > Plataforma web para cadastro, divulgação e inscrição em eventos acadêmicos do Instituto Federal de Sergipe, inspirada na aba de eventos do SUAP.
 >
 > **Disciplina:** Programação Web I — IFS Campus Lagarto  
-> **Entrega:** 3 de junho de 2026
+
 
 ---
 
 ## Integrantes
 
-- **[Seu Nome Completo]** — [matrícula]
-- **[Nome do Parceiro]** — [matrícula]
+- Kauan César Ferreira — 2024000108
+- Indigo Santos Tavares — 2024002739
 
 ---
 
@@ -18,7 +17,7 @@
 
 ```bash
 # 1. Clone o repositório
-git clone <URL-DO-REPOSITORIO>
+git clone https://github.com/cesarka1/EventosIfs.git
 cd EventosIfs
 
 # 2. Crie e ative o ambiente virtual
@@ -65,14 +64,14 @@ Acesse em: **http://127.0.0.1:8000/**
 
 | RF   | Descrição                                               | Status |
 |------|---------------------------------------------------------|--------|
-| RF01 | Cadastro de usuário com validação de e-mail único       | ✅ |
+| RF01 | Cadastro de usuário com validação de email unico                | ✅ |
 | RF02 | Login e logout com autenticação nativa do Django        | ✅ |
 | RF03 | Modelo Evento com 9 campos relevantes                   | ✅ |
 | RF04 | CRUD completo de eventos (criar, listar, editar, excluir) | ✅ |
 | RF05 | Inscrição e cancelamento de inscrição em eventos        | ✅ |
 | RF06 | Validações personalizadas: data_fim > data_inicio, vagas > 0 | ✅ |
 | RF07 | Busca/filtro por texto, categoria e status via GET      | ✅ |
-| RF08 | Controle de acesso: apenas o dono edita/exclui          | ✅ |
+| RF08 | Controle de acesso: apenas o coordenador do evento edita/exclui          | ✅ |
 | RF09 | Herança de templates via base.html                      | ✅ |
 | RF10 | Migrations e dados de exemplo (comando `seed`)          | ✅ |
 
@@ -80,10 +79,23 @@ Acesse em: **http://127.0.0.1:8000/**
 
 ## Capturas de Tela
 
-> *(Adicione aqui capturas de tela da aplicação funcionando)*
+
 
 1. Página inicial — lista de eventos com filtros
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fda09ced-884d-40f2-b6b0-4fa684073bb2" />
 2. Página de detalhe de um evento com botão de inscrição
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1390eb01-ceec-417b-91b1-c17478863ac2" />
+3. Login
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e555e0a9-e92c-41f7-be2d-e98a0ecc269e" />
+
+4. Forms Criar Evento(Create)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0f17a3b3-52b9-4fa1-9936-4a73556748ee" />
+5. Meus Eventos(Read)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2e02e878-dd20-4e2e-8d7b-67b013b71974" />
+6. Apagar Evento(Delete)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/5c0612a6-9b0b-460a-b04b-60233d10916e" />
+   
+
 
 ---
 
